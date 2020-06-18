@@ -4,30 +4,40 @@
  * Defeat each enemy robot
 "Lose" - Player robot's health is zero or less */
 
-var fight = function(enemy) {
-    while(enemy.health > 0 && playerInfo.health > 0) {
+var fightOrSkip = function() {
+    // Prompts the users if they want to fight or skip
+    var promptFight = window.prompt("Would you like to FIGHT or SKIP this battle? Enter 'Fight' or 'SKIP' to choose.");
+    console.log(promptFight);
 
-        // Prompts the users if they want to fight or skip
-        var promptFight = window.prompt("Would you like to FIGHT or SKIP this battle? Enter 'Fight' or 'SKIP' to choose.");
-        console.log(promptFight);
+    // Conditional Recursive Function Call
+    if (promptFight === "" || promptFight === null) {
+        window.alert("You need to provide a valid answer! Please try again.");
+        return fightOrSkip();
+    }
 
-        if (promptFight === "skip" || promptFight === "SKIP") {
-            // Confirms user wants to skip
-            var confirmSkip = window.confirm("Are you sure you'd like to quit?");
+    promptFight = promptFight.toLowerCase();
 
-            // If yes (true), leave fight
-            if (confirmSkip) {
+    if (promptFight === "skip") {
+        // Confirms user wants to skip
+        var confirmSkip = window.confirm("Are you sure you'd like to quit?");
+
+        // If yes (true), leave fight
+        if (confirmSkip) {
             window.alert(playerInfo.name + " has decided to skip this fight. Goodbye!");
             // Subtract money from playerInfo.money for skipping
             playerInfo.money = Math.max(0, playerInfo.money - 10);
             console.log("playerInfo.money", playerInfo.money);
+            return true;
+        }
+        return false;
+    }
+};
+
+var fight = function(enemy) {
+    while(enemy.health > 0 && playerInfo.health > 0) {
+        if (fightOrSkip()) {
+            // If true leave fight by breaking loop
             break;
-            }
-            // If no (false), ask question again by running fight() again
-            else {
-                fight();
-            }
-            window.alert(playerInfo.name + " has chosen to skip the fight!");
         }
 
         // Subtract playerInfo.attack from enemy.health and the result updates the enemy.health variable.
